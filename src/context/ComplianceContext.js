@@ -71,6 +71,16 @@ export const ComlianceProvider = ({ children }) => {
     length: 10,
   });
 
+  const [searchComplianceReportPayload, setSearchComplianceReportPayload] =
+    useState({
+      reportTitle: "",
+      reportTitleOutside: "",
+      dueDateFrom: "",
+      dueDateTo: "",
+      pageNumber: 0,
+      length: 10,
+    });
+
   const [complianceByMeList, setComplianceByMeList] = useState([]);
   const [complianceByMeTotal, setComplianceByMeTotal] = useState(0);
 
@@ -151,14 +161,18 @@ export const ComlianceProvider = ({ children }) => {
   };
 
   // view compliance
+
   const [showViewCompliance, setShowViewCompliance] = useState(false);
   const [viewComplianceDetailsTab, setViewComplianceDetailsTab] = useState(1);
   const [allowedComplianceStatusOptions, setAllowedComplianceStatusOptions] =
     useState([]);
   const [allCheckListByComplianceId, setAllCheckListByComplianceId] = useState(
-    [],
+    []
   );
   const [searchbox, setsearchbox] = useState(false);
+
+  //Modal View Report
+  const [viewDetailComponent, setViewDetailComponent] = useState(false);
 
   // View Type for Compliance Dashboard Manager View Type is 1 which is by default User View is 2
   const [viewTypeDashboard, setViewTypeDashboard] = useState(1);
@@ -291,7 +305,7 @@ export const useComplianceContext = () => {
 
   if (!context) {
     throw new Error(
-      "useComplianceContext must be used within a AuthorityProvider",
+      "useComplianceContext must be used within a AuthorityProvider"
     );
   }
   return context;
