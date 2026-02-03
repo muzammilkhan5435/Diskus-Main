@@ -21,6 +21,7 @@ import ComplianceStandingReport from "./Tabs/Reports/complianceStandingReport/Co
 import EndOfComplianceReport from "./Tabs/Reports/endOfComplianceReport/EndOfComplianceReport";
 import EndOfQuarterReport from "./Tabs/Reports/endOfQuarterReport/EndOfQuarterReport";
 import AccumulativeReport from "./Tabs/Reports/accumulativeReport/AccumulativeReport";
+import SearchComlianceReportModal from "./CommonComponents/searchComlianceReportModal";
 
 const MainCompliance = () => {
   const { t } = useTranslation();
@@ -28,7 +29,7 @@ const MainCompliance = () => {
   const navigate = useNavigate();
   const AllComplianceStatus = useSelector(
     (state) =>
-      state.ComplainceSettingReducerReducer.GetComplianceAndTaskStatuses,
+      state.ComplainceSettingReducerReducer.GetComplianceAndTaskStatuses
   );
   const {
     createEditCompliance,
@@ -177,6 +178,8 @@ const MainCompliance = () => {
               <span className={styles["Compliance_dashboard_heading"]}>
                 {mainComplianceTabs === 2
                   ? t("Compliances-by-me")
+                  : mainComplianceTabs === 4
+                  ? t("Reports")
                   : "Compliance Dashboard"}
               </span>
               {mainComplianceTabs === 2 && (
@@ -205,6 +208,10 @@ const MainCompliance = () => {
             ) : mainComplianceTabs === 2 || mainComplianceTabs === 3 ? (
               <Col sm={12} md={6} lg={6}>
                 <SearchComplianceBoxModal />
+              </Col>
+            ) : mainComplianceTabs === 4 ? (
+              <Col sm={12} md={6} lg={6}>
+                <SearchComlianceReportModal />
               </Col>
             ) : null}
           </Row>

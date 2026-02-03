@@ -2662,5 +2662,12 @@
   "Confirm-action": "Confirm Action",
   "Cancel-compliance-only": "Cancel Compliance Only",
   "Cancel-compliance-with-associated-items": "Cancel Compliance with Associated items",
-  "Once-cancelled,-this-compliance-cannot-be-Re-opened-or-moved-back-to-In-Progress": "Once cancelled, this compliance cannot be Re-opened or moved back to In Progress"
+  "Once-cancelled,-this-compliance-cannot-be-Re-opened-or-moved-back-to-In-Progress": "Once cancelled, this compliance cannot be Re-opened or moved back to In Progress",
+  "Task-Name": "Task Name",
+  "assignee": "Assignee",
+  "Generated-on": "Generated On",
+  "completed-on": "Completed On",
+  "completed": "Completed",
+  "Report-title": "Report Title",
+  "Report-type": "Report Type"
 }

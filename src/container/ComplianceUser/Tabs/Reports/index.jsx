@@ -103,7 +103,6 @@ const Reports = () => {
   // const [endDateSort, setEndDateSort] = useState("ascend");
   const {
     reportList,
-    setViewDetailComponent,
     setComplianceStandingReport,
     setEndOfComplianceReport,
     setEndOfQuarterReport,
@@ -135,8 +134,8 @@ const Reports = () => {
             {text === 1
               ? t("End-of-Compliance-Reports")
               : text === 2
-                ? t("Quarterly-reports")
-                : t("Accumulative-reports")}
+              ? t("Quarterly-reports")
+              : t("Accumulative-reports")}
           </span>
         ),
       },
@@ -231,7 +230,6 @@ const Reports = () => {
               <CustomButton
                 className={styles["actionButtons_complianceList"]}
                 text={"View Report"}
-                onClick={() => setViewDetailComponent(true)}
               />
             </div>
           );
@@ -258,7 +256,7 @@ const Reports = () => {
         },
       },
     ],
-    [reportList, t],
+    [reportList, t]
   );
 
   return (
