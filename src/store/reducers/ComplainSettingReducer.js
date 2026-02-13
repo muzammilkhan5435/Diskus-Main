@@ -51,6 +51,10 @@ const initialState = {
   GetComplianceReopenDashboardData: null,
   GetComlianceQuarterlyTasksDashboardData: null,
   GetReportListingData: null,
+  GetEndOfComplianceReport: null,
+  GetQuarterReport: null,
+  GetComplianceStandingReport: null,
+  GetAccumulativeReport: null,
 };
 
 const ComplainceSettingReducerReducer = (state = initialState, action) => {
@@ -1130,6 +1134,110 @@ const ComplainceSettingReducerReducer = (state = initialState, action) => {
         addReopenComplianceDetails: action.response2,
       };
     }
+
+    //API For Get End Of Compliance Report
+    case actions.Get_END_OF_COMPLIANCE_REPORT_INIT:
+      return {
+        ...state,
+        Loading: true,
+        severity: null,
+      };
+
+    case actions.Get_END_OF_COMPLIANCE_REPORT_SUCCESS:
+      return {
+        ...state,
+        Loading: false,
+        GetEndOfComplianceReport: action.response,
+        ResponseMessage: action.message,
+        severity: "success",
+      };
+
+    case actions.Get_END_OF_COMPLIANCE_REPORT_FAIL:
+      return {
+        ...state,
+        Loading: false,
+        GetEndOfComplianceReport: null,
+        ResponseMessage: action.message,
+        severity: "error",
+      };
+
+    //API For Get Quarter Report
+    case actions.Get_QUARTER_REPORT_INIT:
+      return {
+        ...state,
+        Loading: true,
+        severity: null,
+      };
+
+    case actions.Get_QUARTER_REPORT_SUCCESS:
+      return {
+        ...state,
+        Loading: false,
+        GetQuarterReport: action.response,
+        ResponseMessage: action.message,
+        severity: "success",
+      };
+
+    case actions.Get_QUARTER_REPORT_FAIL:
+      return {
+        ...state,
+        Loading: false,
+        GetQuarterReport: null,
+        ResponseMessage: action.message,
+        severity: "error",
+      };
+
+    //API For Get Compliance Standing Report
+    case actions.Get_COMPLIANCE_STANDING_REPORT_INIT:
+      return {
+        ...state,
+        Loading: true,
+        severity: null,
+      };
+
+    case actions.Get_COMPLIANCE_STANDING_REPORT_SUCCESS:
+      return {
+        ...state,
+        Loading: false,
+        GetComplianceStandingReport: action.response,
+        ResponseMessage: action.message,
+        severity: "success",
+      };
+
+    case actions.Get_COMPLIANCE_STANDING_REPORT_FAIL:
+      return {
+        ...state,
+        Loading: false,
+        GetComplianceStandingReport: null,
+        ResponseMessage: action.message,
+        severity: "error",
+      };
+
+    //API For Get Accumulative Report
+    case actions.Get_ACCUMULATIVE_REPORT_INIT:
+      return {
+        ...state,
+        Loading: true,
+        severity: null,
+      };
+
+    case actions.Get_ACCUMULATIVE_REPORT_SUCCESS:
+      return {
+        ...state,
+        Loading: false,
+        GetAccumulativeReport: action.response,
+        ResponseMessage: action.message,
+        severity: "success",
+      };
+
+    case actions.Get_ACCUMULATIVE_REPORT_FAIL:
+      return {
+        ...state,
+        Loading: false,
+        GetAccumulativeReport: null,
+        ResponseMessage: action.message,
+        severity: "error",
+      };
 
     // ================= DEFAULT =================
     default:

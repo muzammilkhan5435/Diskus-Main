@@ -20,75 +20,15 @@ import {
   getDueDateTimeNumber,
 } from "../../CommonComponents/commonFunctions";
 import { useAntTableScrollBottomVirtual } from "../../../Admin/Compliance/CommonFunctions/reusableFunctions";
-import { ComplianceReportListingAPI } from "../../../../store/actions/ComplainSettingActions";
+import {
+  ComplianceReportListingAPI,
+  GetAccumulativeReportAPI,
+  GetComplianceStandingReportAPI,
+  GetEndOfComplianceReportAPI,
+  GetQuarterReportAPI,
+} from "../../../../store/actions/ComplainSettingActions";
 import { useSelector } from "react-redux";
 import { formatDateToYYYYMMDD } from "../../../../commen/functions/date_formater";
-
-const reportsData = [
-  {
-    type: "End of Compliance",
-    reportTitle: "Establishment of Robust Multi-Factor Authentication",
-    generatedOn: "05 December 2025",
-    startDate: "05 December 2025",
-    endDate: "05 December 2025",
-  },
-  {
-    type: "Quarterly",
-    reportTitle: "End of Quarter 2 - 2025",
-    generatedOn: "05 December 2025",
-    startDate: "05 December 2025",
-    endDate: "05 December 2025",
-  },
-  {
-    type: "Accumulative",
-    reportTitle: "Accumulative Quarter of Q1 - Q3 2025",
-    generatedOn: "05 December 2025",
-    startDate: "05 December 2025",
-    endDate: "05 December 2025",
-  },
-  {
-    type: "End of Compliance",
-    reportTitle: "Deployment of Advanced Threat Detection",
-    generatedOn: "05 December 2025",
-    startDate: "05 December 2025",
-    endDate: "05 December 2025",
-  },
-  {
-    type: "Quarterly",
-    reportTitle: "End of Quarter 1 - 2025",
-    generatedOn: "05 December 2025",
-    startDate: "05 December 2025",
-    endDate: "05 December 2025",
-  },
-  {
-    type: "Accumulative",
-    reportTitle: "Accumulative Quarter of Q1 - Q3 2024",
-    generatedOn: "05 December 2025",
-    startDate: "05 December 2025",
-    endDate: "05 December 2025",
-  },
-  {
-    type: "End of Compliance",
-    reportTitle: "Establishment of Robust Multi-Factor Authentication",
-    generatedOn: "05 December 2025",
-    startDate: "05 December 2025",
-    endDate: "05 December 2025",
-  },
-  {
-    type: "Quarterly",
-    reportTitle: "End of Quarter 2 - 2025",
-    generatedOn: "05 December 2025",
-    startDate: "05 December 2025",
-    endDate: "05 December 2025",
-  },
-  {
-    type: "Accumulative",
-    reportTitle: "Accumulative Quarter of Q1 - Q3 2025",
-    generatedOn: "05 December 2025",
-    startDate: "05 December 2025",
-    endDate: "05 December 2025",
-  },
-];
 
 const Reports = () => {
   const { t } = useTranslation();
@@ -96,7 +36,7 @@ const Reports = () => {
   const navigate = useNavigate();
 
   const GetReportListingData = useSelector(
-    (state) => state.ComplainceSettingReducerReducer.GetReportListingData,
+    (state) => state.ComplainceSettingReducerReducer.GetReportListingData
   );
 
   const [reportTypeFilter, setReportTypeFilter] = useState([1, 2, 3]);
@@ -125,6 +65,8 @@ const Reports = () => {
       reportTypeIds: "",
       generatedOnStartDate: "",
       generatedOnEndDate: "",
+      sRow: 0,
+      length: 10,
     };
     dispatch(ComplianceReportListingAPI(navigate, data, t));
   }, []);
@@ -191,6 +133,41 @@ const Reports = () => {
     filterIcon: () => <ChevronDown className="filter-chevron-icon-todolist" />,
   });
 
+  const fetchEndOfComplianceReportClick = (record) => {
+    console.log(record, "Check Coming here");
+    if (record?.reportTypeId === 1) {
+      setEndOfComplianceReport(true);
+      let data = {
+        reportId: Number(record?.reportId),
+        reportTypeId: 1,
+      };
+      dispatch(GetEndOfComplianceReportAPI(navigate, data, t));
+    } else if (record?.reportTypeId === 2) {
+      setEndOfQuarterReport(true);
+      let data = {
+        reportId: Number(record?.reportId),
+        reportTypeId: 2,
+      };
+      dispatch(GetQuarterReportAPI(navigate, data, t));
+    } else if (record?.reportTypeId === 3) {
+      setAccumulativeReport(true);
+      let data = {
+        reportId: Number(record?.reportId),
+        reportTypeId: 3,
+      };
+      dispatch(GetAccumulativeReportAPI(navigate, data, t));
+    }
+  };
+
+  const onClickOfViewPort = () => {
+    setComplianceStandingReport(true);
+    let data = {
+      startDate: "",
+      endDate: "",
+    };
+    dispatch(GetComplianceStandingReportAPI(navigate, data, t));
+  };
+
   const columns = useMemo(
     () => [
       {
@@ -207,8 +184,8 @@ const Reports = () => {
               {record.reportTypeId === 1
                 ? t("End-of-Compliance-Reports")
                 : record.reportTypeId === 2
-                  ? t("Quarterly-reports")
-                  : t("Accumulative-reports")}
+                ? t("Quarterly-reports")
+                : t("Accumulative-reports")}
             </span>
           );
         },
@@ -236,12 +213,12 @@ const Reports = () => {
                 ?.toLowerCase()
                 .localeCompare(a.reportTitle?.toLowerCase())
             : reportTitleSort === "ascend"
-              ? a.reportTitle
-                  ?.toLowerCase()
-                  .localeCompare(b.reportTitle?.toLowerCase())
-              : a.reportTitle
-                  ?.toLowerCase()
-                  .localeCompare(b.reportTitle?.toLowerCase()),
+            ? a.reportTitle
+                ?.toLowerCase()
+                .localeCompare(b.reportTitle?.toLowerCase())
+            : a.reportTitle
+                ?.toLowerCase()
+                .localeCompare(b.reportTitle?.toLowerCase()),
         align: "start",
         render: (text) => {
           return <span>{text}</span>;
@@ -316,58 +293,95 @@ const Reports = () => {
         ellipsis: true,
         align: "left",
       },
+      // {
+      //   title: "",
+      //   dataIndex: "",
+      //   key: "",
+      //   width: "10%",
+      //   ellipsis: true,
+      //   align: "center",
+
+      //   render: (_, record) => {
+      //     return (
+      //       <div className="d-flex align-item-center justify-content-center">
+      //         <CustomButton
+      //           className={styles["actionButtons_complianceList"]}
+      //           text={"View Report"}
+      //           // setEndOfQuarterReport(true)
+      //           onClick={() =>
+      //             record.reportTypeId === 1
+      //               ? fetchEndOfComplianceReportClick(record)
+      //               : record.reportTypeId === 2
+      //               ? fetchEndOfComplianceReportClick(record)
+      //               : record.reportTypeId === 3
+      //               ? fetchEndOfComplianceReportClick(record)
+      //               : null
+      //           }
+      //         />
+      //       </div>
+      //     );
+      //   },
+      // },
+      // {
+      //   title: "",
+      //   dataIndex: "",
+      //   key: "",
+      //   width: "10%",
+      //   ellipsis: true,
+      //   align: "center",
+
+      //   render: (_, record) => {
+      //     return (
+      //       <div className="d-flex align-item-center justify-content-center">
+      //         <CustomButton
+      //           className={styles["actionButtons_complianceList"]}
+      //           text={"Download"}
+      //           // onClick={() => handleViewCompliance(record)}
+      //         />
+      //       </div>
+      //     );
+      //   },
+      // },
       {
         title: "",
         dataIndex: "",
         key: "",
-        width: "10%",
+        width: "20%",
         ellipsis: true,
         align: "center",
 
         render: (_, record) => {
           return (
-            <div className="d-flex align-item-center justify-content-center">
-              <CustomButton
-                className={styles["actionButtons_complianceList"]}
-                text={"View Report"}
-                onClick={() =>
-                  record.reportTypeId === 1
-                    ? setEndOfComplianceReport(true)
-                    : record.reportTypeId === 2
-                      ? setEndOfQuarterReport(true)
+            <div className="d-flex  gap-2">
+              <div className="d-flex align-item-center justify-content-center">
+                <CustomButton
+                  className={styles["actionButtons_complianceList"]}
+                  text={"View Report"}
+                  // setEndOfQuarterReport(true)
+                  onClick={() =>
+                    record.reportTypeId === 1
+                      ? fetchEndOfComplianceReportClick(record)
+                      : record.reportTypeId === 2
+                      ? fetchEndOfComplianceReportClick(record)
                       : record.reportTypeId === 3
-                        ? setAccumulativeReport(true)
-                        : record.reportTypeId === 3
-                          ? setComplianceStandingReport(true)
-                          : null
-                }
-              />
-            </div>
-          );
-        },
-      },
-      {
-        title: "",
-        dataIndex: "",
-        key: "",
-        width: "10%",
-        ellipsis: true,
-        align: "center",
-
-        render: (_, record) => {
-          return (
-            <div className="d-flex align-item-center justify-content-center">
-              <CustomButton
-                className={styles["actionButtons_complianceList"]}
-                text={"Download"}
-                // onClick={() => handleViewCompliance(record)}
-              />
+                      ? fetchEndOfComplianceReportClick(record)
+                      : null
+                  }
+                />
+              </div>
+              <div className="d-flex align-item-center justify-content-center">
+                <CustomButton
+                  className={styles["actionButtons_complianceList"]}
+                  text={"Download"}
+                  // onClick={() => handleViewCompliance(record)}
+                />
+              </div>
             </div>
           );
         },
       },
     ],
-    [reportTitleSort, getReportTypeColumnProps, generatedOnSort, t],
+    [reportTitleSort, getReportTypeColumnProps, generatedOnSort, t]
   );
 
   return (
@@ -397,7 +411,7 @@ const Reports = () => {
                   <CustomButton
                     className={styles["actionButtons_complianceStatusReport"]}
                     text={"View Report"}
-                    onClick={() => setComplianceStandingReport(true)}
+                    onClick={onClickOfViewPort}
                   />
                 </div>
               </Col>

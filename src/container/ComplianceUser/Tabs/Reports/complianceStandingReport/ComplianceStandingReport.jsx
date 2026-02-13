@@ -1,20 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./ComplianceStandingReport.module.css";
 import { Col, Row } from "react-bootstrap";
 import { useComplianceContext } from "../../../../../context/ComplianceContext";
 import BackButton from "./../../../../../assets/images/backbutton.svg";
 import Verification from "./../../../../../assets/images/Verification.png";
 import ComplianceCalendar from "./../../../../../assets/images/ComplianceCalendar.png";
-import { DatePicker, Collapse, Progress, Spin } from "antd";
+import { DatePicker, Collapse, Progress, Spin, Tooltip } from "antd";
 import CustomButton from "../../../../../components/elements/button/Button";
 import { DownOutlined } from "@ant-design/icons";
 import generatePDF, { Resolution, Margin } from "react-to-pdf";
-
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { GetComplianceStandingReportAPI } from "../../../../../store/actions/ComplainSettingActions";
+import { useTranslation } from "react-i18next";
+import { formatDateToYMD } from "../../../CommonComponents/commonFunctions";
 const { Panel } = Collapse;
 
 const ComplianceStandingReport = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+
   const { complianceStatndingReport, setComplianceStandingReport } =
     useComplianceContext();
+
+  const GetComplianceStandingReport = useSelector(
+    (state) => state.ComplainceSettingReducerReducer.GetComplianceStandingReport
+  );
+  console.log(GetComplianceStandingReport, "GetComplianceStandingReport");
+
   const [isGenerating, setIsGenerating] = useState(false);
   const [showPdfLayout, setShowPdfLayout] = useState(false);
 
@@ -197,7 +212,7 @@ const ComplianceStandingReport = () => {
                 <Col lg={2} xs="auto" className={styles.iconTextWrapper}>
                   <img src={Verification} alt="Verification" />
                   <div>
-                    <label>Report Type:</label>
+                    <label>{t("Report-type ")}:</label>
                     <p>Compliance Standing</p>
                   </div>
                 </Col>
@@ -210,8 +225,14 @@ const ComplianceStandingReport = () => {
                 >
                   <img src={ComplianceCalendar} alt="ComplianceCalendar" />
                   <div>
-                    <label>Generated Date:</label>
-                    <p>15 January 2025</p>
+                    <label>{t("Generated-date")}:</label>
+                    <p>
+                      {" "}
+                      {formatDateToYMD(
+                        GetComplianceStandingReport?.complianceStandingReport
+                          ?.generatedDate
+                      )}
+                    </p>
                   </div>
                 </Col>
 
@@ -244,8 +265,14 @@ const ComplianceStandingReport = () => {
                   className={`${styles.ComplianceMainHeading} mt-4`}
                 >
                   <div>
-                    <label>Report Title:</label>
-                    <p>Compliance Standing Report</p>
+                    <label>{t("Report-title")}:</label>
+                    <p>
+                      {" "}
+                      {
+                        GetComplianceStandingReport?.complianceStandingReport
+                          ?.reportTitle
+                      }
+                    </p>
                   </div>
                 </Col>
               </Row>
@@ -254,14 +281,14 @@ const ComplianceStandingReport = () => {
               <div className={styles.tableWrapper}>
                 {/* 🔹 STATIC HEADER */}
                 <div className={styles.tableHeader}>
-                  <div>Compliance Name ↓</div>
-                  <div>Authority ↓</div>
-                  <div>Criticality</div>
-                  <div>Due Date ↓</div>
-                  <div>Total Checklists ↓</div>
-                  <div>No. of Tasks ↓</div>
-                  <div>Overdue Tasks ↓</div>
-                  <div>Progress % ↓</div>
+                  <div>{t("Compliance-name")}↓</div>
+                  <div>{t("Authority")} ↓</div>
+                  <div>{t("Criticalityy")} </div>
+                  <div>{t("Due-date")} ↓</div>
+                  <div>{t("Total-checklists")} ↓</div>
+                  <div>{t("No-of-tasks")} ↓</div>
+                  <div>{t("Overdue-tasks")} ↓</div>
+                  <div>{t("Progress")} % ↓</div>
                 </div>
 
                 {/* 🔹 COLLAPSE ROWS */}
@@ -279,99 +306,143 @@ const ComplianceStandingReport = () => {
                   )}
                   className={styles.collapseWrapper}
                 >
-                  {complianceData.map((item) => (
-                    <Panel
-                      key={item.id}
-                      header={
-                        <div className={styles.tableRow}>
-                          <div className={styles.nameCol}>{item.name}</div>
-                          <div>
-                            <span className={styles.badge}>
-                              {item.authority}
-                            </span>
-                          </div>
-                          <div>
-                            <span className={styles.criticality}>
-                              {item.criticality}
-                            </span>
-                          </div>
-                          <div>{item.dueDate}</div>
-                          <div>{item.totalChecklist}</div>
-                          <div>{item.totalTasks}</div>
-                          <div>{item.overdueTasks}</div>
-                          <div>{item.progress}</div>
-                        </div>
-                      }
-                    >
-                      {/* EXPANDED CONTENT */}
-                      <div className={styles.panelContent}>
-                        <Row>
-                          <Col
-                            lg={12}
-                            xs="auto"
-                            className={`${styles.ComplianceMainHeading}`}
-                          >
-                            <div>
-                              <label>Checklist Title:</label>
-                              <p>
-                                Implementation of End-to-End Data Encryption
-                                Across All Internal Systems, External
-                                Communication{" "}
-                              </p>
+                  {GetComplianceStandingReport?.complianceStandingReport?.complianceListData.map(
+                    (item) => (
+                      <Panel
+                        key={item.complianceId}
+                        header={
+                          <div className={styles.tableRow}>
+                            <div className={styles.nameCol}>
+                              <Tooltip title={item.complianceTitle}>
+                                <p> {item.complianceTitle}</p>
+                              </Tooltip>
                             </div>
-                          </Col>
-                        </Row>
-
-                        <div className={styles.insideAccordianTable}>
-                          <Row>
-                            <Col lg={12} xs="auto">
-                              <div
-                                className={styles.insideAccordianMainHeading}
+                            <div>
+                              <span className={styles.badge}>
+                                {item.authorityShortCode}
+                              </span>
+                            </div>
+                            <div>
+                              <span className={styles.criticality}>
+                                {item.criticality.label}
+                              </span>
+                            </div>
+                            <div>{formatDateToYMD(item.dueDate)}</div>
+                            <div>{item.totalChecklists}</div>
+                            <div>{item.totalTasks}</div>
+                            <div>{item.overdueTasks}</div>
+                            <div>{item.progressPercentage}</div>
+                          </div>
+                        }
+                      >
+                        {" "}
+                        {/* EXPANDED CONTENT */}
+                        {item?.checklistData.map((checklist) => (
+                          <div
+                            className={styles.panelContent}
+                            key={checklist.checklistId}
+                          >
+                            <Row>
+                              <Col
+                                lg={12}
+                                xs="auto"
+                                className={`${styles.ComplianceMainHeading}`}
                               >
-                                <label>Task Title:</label>
-                                <p>
-                                  Implementation of End-to-End Data Encryption
-                                  Across All Internal Systems
-                                </p>
-                              </div>
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col lg={4} xs="auto">
-                              <div className={styles.insideAccordianSubHeading}>
-                                <label>Assignee:</label>
-                                <p>Ali Khan</p>
-                              </div>
-                            </Col>{" "}
-                            <Col lg={2} xs="auto">
-                              <div className={styles.insideAccordianSubHeading}>
-                                <label>Due Date:</label>
-                                <p>10 June 2025</p>
-                              </div>
-                            </Col>
-                            <Col lg={2} xs="auto">
-                              <div className={styles.insideAccordianSubHeading}>
-                                <label>Completed on:</label>
-                                <p>10 June 2025</p>
-                              </div>
-                            </Col>
-                            <Col lg={2} xs="auto">
-                              <div className={styles.insideAccordianSubHeading}>
-                                <label>Status:</label>
-                                <p>Completed</p>
-                              </div>
-                            </Col>
-                            <Col lg={2} xs="auto">
-                              <div className={styles.insideAccordianSubHeading}>
-                                <label>Completed:</label>
-                                <p>On Time</p>
-                              </div>
-                            </Col>
-                          </Row>
-                        </div>
-                      </div>
-                    </Panel>
-                  ))}
+                                <div>
+                                  <label>{t("Checklist-title")}:</label>
+                                  <p>{checklist.checklistTitle}</p>
+                                </div>
+                              </Col>
+                            </Row>
+                            <div className={styles.MainAccordianTable}>
+                              {checklist?.checklistTasks.map(
+                                (checklisttask) => (
+                                  <div
+                                    className={styles.insideAccordianTable}
+                                    key={checklisttask.taskId}
+                                  >
+                                    <Row>
+                                      <Col lg={12} xs="auto">
+                                        <div
+                                          className={
+                                            styles.insideAccordianMainHeading
+                                          }
+                                        >
+                                          <label>{t("Task-title")}:</label>
+                                          <p>{checklisttask.taskTitle}</p>
+                                        </div>
+                                      </Col>
+                                    </Row>
+                                    <Row>
+                                      <Col lg={4} xs="auto">
+                                        <div
+                                          className={
+                                            styles.insideAccordianSubHeading
+                                          }
+                                        >
+                                          <label>{t("Assignee")}:</label>
+                                          <p>{checklisttask.taskAssignee}</p>
+                                        </div>
+                                      </Col>{" "}
+                                      <Col lg={2} xs="auto">
+                                        <div
+                                          className={
+                                            styles.insideAccordianSubHeading
+                                          }
+                                        >
+                                          <label>{t("Due-date")}:</label>
+                                          <p>
+                                            {formatDateToYMD(
+                                              checklisttask.dueDate
+                                            )}
+                                          </p>
+                                        </div>
+                                      </Col>
+                                      <Col lg={2} xs="auto">
+                                        <div
+                                          className={
+                                            styles.insideAccordianSubHeading
+                                          }
+                                        >
+                                          <label>{t("Completed-on")}:</label>
+                                          <p>
+                                            {checklisttask.completedOnDate ??
+                                              "-"}
+                                          </p>
+                                        </div>
+                                      </Col>
+                                      <Col lg={2} xs="auto">
+                                        <div
+                                          className={
+                                            styles.insideAccordianSubHeading
+                                          }
+                                        >
+                                          <label> {t("Status")}:</label>
+                                          <p>{checklisttask.status}</p>
+                                        </div>
+                                      </Col>
+                                      <Col lg={2} xs="auto">
+                                        <div
+                                          className={
+                                            styles.insideAccordianSubHeading
+                                          }
+                                        >
+                                          <label>{t("Completed")}:</label>
+                                          <p>
+                                            {checklisttask.completionStatus}
+                                          </p>
+                                        </div>
+                                      </Col>
+                                    </Row>
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </Panel>
+                    )
+                  )}
                 </Collapse>
               </div>
             </>
@@ -387,8 +458,14 @@ const ComplianceStandingReport = () => {
                   className={`${styles.ComplianceMainHeading} mt-4`}
                 >
                   <div>
-                    <label>Report Title:</label>
-                    <p>Compliance Standing Report</p>
+                    <label>{t("Report-title")}:</label>
+                    <p>
+                      {" "}
+                      {
+                        GetComplianceStandingReport?.complianceStandingReport
+                          ?.reportTitle
+                      }
+                    </p>
                   </div>
                 </Col>
               </Row>
@@ -396,21 +473,27 @@ const ComplianceStandingReport = () => {
                 <Col className={styles.iconTextWrapperPDF}>
                   <img src={Verification} alt="Verification" />
                   <div>
-                    <label>Report Type:</label>
+                    <label>{t("Report-type ")}:</label>
                     <p>Compliance Standing</p>
                   </div>
                 </Col>
                 <Col className={styles.iconTextWrapperPDF}>
                   <img src={ComplianceCalendar} alt="ComplianceCalendar" />
                   <div>
-                    <label>Generated Date:</label>
-                    <p>15 January 2025</p>
+                    <label>{t("Generated-date")}:</label>
+                    <p>
+                      {" "}
+                      {formatDateToYMD(
+                        GetComplianceStandingReport?.complianceStandingReport
+                          ?.generatedDate
+                      )}
+                    </p>
                   </div>
                 </Col>
                 <Col className={styles.iconTextWrapperPDF}>
                   <img src={ComplianceCalendar} alt="ComplianceCalendar" />
                   <div>
-                    <label>Date Range:</label>
+                    <label>{t("Date-range")}:</label>
                     <p>1 January 2025 - 31 March 2025</p>
                   </div>
                 </Col>

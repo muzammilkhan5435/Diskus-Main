@@ -131,7 +131,11 @@
 }
 
 .nameCol {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-weight: 500;
+  max-width: 300px;
 }
 
 .badge {
@@ -173,7 +177,11 @@
   padding: 16px;
   background: #f6f9fc !important;
 }
-
+.MainAccordianTable {
+  max-height: 300px;
+  overflow: hidden;
+  overflow-y: auto;
+}
 .insideAccordianTable {
   height: 140px;
   padding: 10px 20px;
@@ -225,5 +233,3 @@
   font-weight: 600;
   margin-top: 16px;
 }
-
-
