@@ -169,6 +169,7 @@
   border-radius: 8px;
   padding: 8px;
   display: flex;
+  justify-content: center;
   align-items: center;
   margin-top: 20px;
   color: #6172d6;
@@ -176,6 +177,7 @@
 }
 
 .reportDetailsBar span {
+  display: flex;
   font-size: 14px;
   font-weight: 600;
   font-family: "Montserrat";
